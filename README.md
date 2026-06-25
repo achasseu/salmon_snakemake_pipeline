@@ -101,8 +101,8 @@ The Snakefile currently expects a plain `sample_list.txt` and has a small set of
 1. Create `sample_list.txt` in repo root:
 
 ```
-SAMPLE1
-SAMPLE2
+Plate1_SAMPLE1
+Plate2_SAMPLE2
 ```
 
 2. Ensure your reads follow the naming layout the script expects (e.g., `SAMPLE1_R1.fastq.gz`, `SAMPLE1_R2.fastq.gz`) or adapt `scripts/run_salmon.sh`.
@@ -117,4 +117,10 @@ snakemake -n
 
 ```
 snakemake -j 8
+```
+
+5. Run the results compiler:
+
+```
+python3 scripts/compile_results.py
 ```
