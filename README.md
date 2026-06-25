@@ -32,3 +32,5 @@ The pipeline:
 ```bash
 module load bioinfo-tools
 module load Salmon/1.10.1
+
+(This repository was built only to showcase my skills, but works if you feed it a sample list in the config folder)
