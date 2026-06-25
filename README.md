@@ -1,31 +1,139 @@
-# 🧬 Salmon Snakemake Pipeline
+# Salmon Snakemake Pipeline
 
-A reproducible and scalable RNA-seq quantification pipeline using **Salmon** and **Snakemake**, designed for HPC environments (SLURM).
+A small Snakemake pipeline and Bash wrappers to run Salmon quantification across sequencing samples. Intended to run on a local machine or an HPC cluster (SLURM).
 
-This workflow performs transcript-level quantification from paired-end FASTQ files and generates per-sample abundance estimates.
+## Requirements
 
----
-
-## 📦 Overview
-
-The pipeline:
-
-1. Takes a list of RNA-seq samples
-2. Automatically locates paired-end FASTQ files (R1/R2)
-3. Runs **Salmon quantification**
-4. Produces per-sample output directories containing `quant.sf`
-5. Supports restartability and partial execution via Snakemake
-
----
-
-## ⚙️ Requirements
-
-### Software
-
-- Snakemake
-- Salmon ≥ 1.10
+- Snakemake (tested with Snakemake 6+)
+- Salmon (quant) installed and available in PATH
 - Bash
-- SLURM cluster for parallel execution
+- (Optional) SLURM for cluster submission
 
+## Repository layout
 
-(This repository was built only to showcase my skills, but works if you feed it a sample list in the config folder)
+```
+README.md
+cluster/                 SLURM submission helper
+  salmon_pipeline.sh
+config/                  (optional config files; currently empty)
+scripts/                 helper scripts
+  run_salmon.sh
+workflow/                Snakemake workflow
+  Snakefile
+  rules/                 (optional rule modules)
+```
+
+## Preparing your samples (sample_list)
+
+The pipeline expects a `sample_list.txt` file listing one sample name per line. Each sample name should correspond to how your FASTQ files are named or arranged so the `scripts/run_salmon.sh` script can find the R1 and R2 files.
+
+Supported FASTQ layout options (examples):
+
+1) Paired files in a single directory with naming convention
+
+- Example filenames for sample `SAMPLE1`:
+  - SAMPLE1_R1.fastq.gz
+  - SAMPLE1_R2.fastq.gz
+
+2) Per-sample subdirectories where each sample has a directory named by the sample and contains the FASTQ files
+
+- Directory structure:
+  - reads/SAMPLE1/SAMPLE1_R1.fastq.gz
+  - reads/SAMPLE1/SAMPLE1_R2.fastq.gz
+
+How to create sample_list.txt
+
+- Basic: one sample per line (no header)
+
+```
+SAMPLE1
+SAMPLE2
+SAMPLE3
+```
+
+- Save it at the repository root as `sample_list.txt`, or elsewhere and pass its path to Snakemake via the `--configfile` or by editing the Snakefile accordingly.
+
+Note: The included Snakefile reads `sample_list.txt` from the working directory by default. If you want to put your sample list elsewhere or name it differently, either modify the Snakefile or call Snakemake from the directory where the file is located.
+
+## How to run
+
+- Dry-run the workflow (no execution):
+
+```
+snakemake -n
+```
+
+- Run locally using 8 threads (example):
+
+```
+snakemake -j 8
+```
+
+- Submit to SLURM using the provided wrapper (edit project/account and any other sbatch options):
+
+```
+./cluster/salmon_pipeline.sh
+```
+
+The `cluster/salmon_pipeline.sh` wrapper calls Snakemake with a cluster submission command like:
+
+```
+snakemake --jobs 50 --cluster "sbatch -A <PROJECT> -p core -t 10-00:00:00 -n 1" --rerun-incomplete --latency-wait 60
+```
+
+Replace `<PROJECT>` with your SLURM account/project. Consider editing the wrapper to make the project name an environment variable (e.g., SBATCH_PROJECT) or a script parameter.
+
+- Run a single sample directly (script usage):
+
+```
+./scripts/run_salmon.sh -S SAMPLE_NAME -I /path/to/salmon_index -O /path/to/output_dir
+```
+
+The `run_salmon.sh` wrapper will try to locate R1/R2 files based on the sample name. If your naming scheme differs, either adapt the script or provide a per-sample directory layout that the script understands.
+
+## Configuring the Snakefile
+
+The Snakefile currently expects a plain `sample_list.txt` and has a small set of hard-coded names such as the OUTPUT_DIR and SAMPLE_INDEX symbols used inside the rule. If you prefer a more flexible setup, consider:
+
+- Adding a `config/config.yaml` and reading parameters from it in the Snakefile (index path, output dir, threads, etc.).
+- Moving sample list location into the config and reading it from there.
+
+## Cleanup & repository housekeeping
+
+- Remove `.DS_Store` files (macOS artifacts) and add them to `.gitignore`.
+- Add a `LICENSE` file if you plan to publish the repo.
+- Add an example `sample_list.txt` or example config to help new users get started.
+
+## Example minimal workflow run (end-to-end)
+
+1. Create `sample_list.txt` in repo root:
+
+```
+SAMPLE1
+SAMPLE2
+```
+
+2. Ensure your reads follow the naming layout the script expects (e.g., `SAMPLE1_R1.fastq.gz`, `SAMPLE1_R2.fastq.gz`) or adapt `scripts/run_salmon.sh`.
+
+3. Run a dry-run to validate:
+
+```
+snakemake -n
+```
+
+4. Run the workflow:
+
+```
+snakemake -j 8
+```
+
+## Need help or improvements
+
+If you want, I can:
+- Add an example `sample_list.txt` and a small README snippet showing the file layout.
+- Parameterize the SLURM project/account in `cluster/salmon_pipeline.sh`.
+- Remove `.DS_Store` files and update `.gitignore` and open a PR with those changes.
+
+---
+
+(Updated README to add usage instructions and explain how to prepare `sample_list.txt` and run the pipeline.)
