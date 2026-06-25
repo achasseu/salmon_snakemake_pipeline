@@ -126,14 +126,3 @@ snakemake -n
 ```
 snakemake -j 8
 ```
-
-## Need help or improvements
-
-If you want, I can:
-- Add an example `sample_list.txt` and a small README snippet showing the file layout.
-- Parameterize the SLURM project/account in `cluster/salmon_pipeline.sh`.
-- Remove `.DS_Store` files and update `.gitignore` and open a PR with those changes.
-
----
-
-(Updated README to add usage instructions and explain how to prepare `sample_list.txt` and run the pipeline.)
