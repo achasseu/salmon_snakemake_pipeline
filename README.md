@@ -25,7 +25,7 @@ The pipeline:
 - Snakemake
 - Salmon ≥ 1.10
 - Bash
-- (Optional) SLURM cluster for parallel execution
+- SLURM cluster for parallel execution
 
 ### Modules (HPC example)
 
