@@ -93,16 +93,8 @@ The `run_salmon.sh` wrapper will try to locate R1/R2 files based on the sample n
 
 ## Configuring the Snakefile
 
-The Snakefile currently expects a plain `sample_list.txt` and has a small set of hard-coded names such as the OUTPUT_DIR and SAMPLE_INDEX symbols used inside the rule. If you prefer a more flexible setup, consider:
+The Snakefile currently expects a plain `sample_list.txt` and has a small set of hard-coded names such as the OUTPUT_DIR and SAMPLE_INDEX symbols used inside the rule.
 
-- Adding a `config/config.yaml` and reading parameters from it in the Snakefile (index path, output dir, threads, etc.).
-- Moving sample list location into the config and reading it from there.
-
-## Cleanup & repository housekeeping
-
-- Remove `.DS_Store` files (macOS artifacts) and add them to `.gitignore`.
-- Add a `LICENSE` file if you plan to publish the repo.
-- Add an example `sample_list.txt` or example config to help new users get started.
 
 ## Example minimal workflow run (end-to-end)
 
