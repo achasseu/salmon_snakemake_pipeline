@@ -27,11 +27,5 @@ The pipeline:
 - Bash
 - SLURM cluster for parallel execution
 
-### Modules (HPC example)
-
-```bash
-module load bioinfo-tools
-module load Salmon/1.10.1
-
 
 (This repository was built only to showcase my skills, but works if you feed it a sample list in the config folder)
