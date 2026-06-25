@@ -18,6 +18,7 @@ cluster/                 SLURM submission helper
 config/                  (optional config files; currently empty)
 scripts/                 helper scripts
   run_salmon.sh
+  compile_results.py
 workflow/                Snakemake workflow
   Snakefile
   rules/                 (optional rule modules)
